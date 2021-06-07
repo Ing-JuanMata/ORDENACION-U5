@@ -1,6 +1,5 @@
 
 import io.ManejoArchivo;
-import java.util.ArrayList;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,8 +12,6 @@ import java.util.ArrayList;
  */
 public class MezclaNatural {
 
-    private int datos[];
-
     /**
      * Constructor que inicializa los datos de ordenamiento desde un determinado
      * arreglo de enteros
@@ -22,8 +19,7 @@ public class MezclaNatural {
      * @param datos datos que se desean ordenar
      */
     public MezclaNatural(int[] datos) {
-        this.datos = datos;
-        iniciar();
+        iniciar(datos);
     }
 
     /**
@@ -49,73 +45,71 @@ public class MezclaNatural {
 
     public String ordenar() {
         String[] principal = null;
-        ArrayList<String> datosA = new ArrayList<>();
-        ArrayList<String> datosB = new ArrayList<>();
         int i = 1;
-        boolean ordenado = false;
         do {
-            if (i == 1) {
-                principal = ManejoArchivo.leer("principa;").get(0).split(",");
+            if (principal == null) {
+                principal = ManejoArchivo.leer("principal.u5", 0).split(",");
+                i = 1;
+                ManejoArchivo.eliminar("aux1.u5");
+                ManejoArchivo.eliminar("aux2.u5");
             }
-            i = i > principal.length ? i : escribirBloque(i, datosA, principal);
-            i = i > principal.length ? i : escribirBloque(i, datosB, principal);
+            i = i > principal.length ? i : escribirBloque(i, principal, true);
+            i = i > principal.length ? i : escribirBloque(i, principal, false);
             if (i > principal.length) {
-                i = 0;
-                ManejoArchivo.escribir(datosA, "aux1");
-                ManejoArchivo.escribir(datosB, "aux2");
                 String nuevo = ordenarArchivo();
-                if (!ManejoArchivo.escribir(new String[]{nuevo}, new String[]{"principal"})) {
+                if (!ManejoArchivo.escribir(nuevo, "principal.u5", true)) {
                     System.out.println("ERROR DE ESCRITURA EN ARCHIVO");
                     break;
                 }
-                if (datosB.isEmpty()) {
-                    return ManejoArchivo.leer("principal").get(0);
+                if (ManejoArchivo.leer("aux2.u5", 0).equals("")) {
+                    return ManejoArchivo.leer("principal.u5", 0);
                 }
-                datosA = datosB = null;
+                principal = null;
             }
-        } while (!ordenado);
+        } while (true);
 
         return "";
     }
 
-    private int escribirBloque(int i, ArrayList<String> almacen, String[] data) {
+    private int escribirBloque(int i, String[] data, boolean auxA) {
         String a = "";
+        boolean vacio = auxA ? ManejoArchivo.contarLineas("aux1.u5") == 0 : ManejoArchivo.contarLineas("aux2.u5") == 0;
         if (i == data.length) {
-            almacen.add(data[data.length - 1]);
+            ManejoArchivo.escribir(data[data.length - 1], auxA ? "aux1.u5" : "aux2.u5", vacio);
             i++;
             return i;
         }
-        while (Integer.parseInt(data[i - 1]) < Integer.parseInt(data[i])) {
+        while (Integer.parseInt(data[i - 1]) <= Integer.parseInt(data[i])) {
             a += a.equals("") ? data[i - 1] : "," + data[i - 1];
             i++;
-            if (i == data.length - 1) {
-                a += data[i];
+            if (i == data.length) {
+                a += "," + data[i - 1];
                 i++;
                 break;
             }
         }
         if (i < data.length) {
             if (Integer.parseInt(data[i - 1]) > Integer.parseInt(data[i])) {
-                a += "," + data[i - 1];
+                a += a.equals("") ? data[i - 1] : "," + data[i - 1];
                 i++;
             }
         }
-        almacen.add(a);
+        ManejoArchivo.escribir(a, auxA ? "aux1.u5" : "aux2.u5", vacio);
         return i;
     }
 
     private String ordenarArchivo() {
-        ArrayList<String> a = ManejoArchivo.leer("aux1");
-        ArrayList<String> b = ManejoArchivo.leer("aux2");
         String res = "";
+        int daA = ManejoArchivo.contarLineas("aux1.u5");
+        int daB = ManejoArchivo.contarLineas("aux2.u5");
         int i = 0;
-        for (; i < b.size(); i++) {
+        for (; i < daB; i++) {
             String[] datosA, datosB;
-            datosA = a.get(i).split(",");
-            datosB = b.get(i).split(",");
+            datosA = ManejoArchivo.leer("aux1.u5", i).split(",");
+            datosB = ManejoArchivo.leer("aux2.u5", i).split(",");
             int j = 0, k = 0;
             while (k < datosA.length && j < datosB.length) {
-                if (Integer.parseInt(datosA[k]) < Integer.parseInt(datosB[j])) {
+                if (Integer.parseInt(datosA[k]) <= Integer.parseInt(datosB[j])) {
                     res += res.equals("") ? datosA[k] : "," + datosA[k];
                     k++;
                 }
@@ -123,7 +117,7 @@ public class MezclaNatural {
                     break;
                 }
 
-                if (Integer.parseInt(datosB[j]) < Integer.parseInt(datosA[k])) {
+                if (Integer.parseInt(datosB[j]) <= Integer.parseInt(datosA[k])) {
                     res += res.equals("") ? datosB[j] : "," + datosB[j];
                     j++;
                 }
@@ -137,12 +131,12 @@ public class MezclaNatural {
             }
 
             for (; j < datosB.length; j++) {
-                res += res.equals("") ? datosB[k] : "," + datosB[k];
+                res += res.equals("") ? datosB[j] : "," + datosB[j];
             }
         }
 
-        for (; i < a.size(); i++) {
-            String[] datosA = a.get(i).split(",");
+        for (; i < daA; i++) {
+            String[] datosA = ManejoArchivo.leer("aux1.u5", i).split(",");
             for (String d : datosA) {
                 res += res.equals("") ? d : "," + d;
             }
@@ -154,14 +148,14 @@ public class MezclaNatural {
     /**
      * inicializar del archivo con los numeros pasados por el usuario
      */
-    private void iniciar() {
+    private void iniciar(int[] datos) {
         int cantidad = datos.length;
         String nums = "";
         for (int i = 0; i < cantidad; i++) {
             nums += i == cantidad - 1 ? datos[i] : datos[i] + ",";
         }
 
-        if (ManejoArchivo.escribir(new String[]{nums}, new String[]{"principal"})) {
+        if (ManejoArchivo.escribir(nums, "principal.u5", true)) {
             System.out.println("INICIALIZACION EXITOSA");
             return;
         }
@@ -176,14 +170,14 @@ public class MezclaNatural {
      * @param cantidad numero de datos a generar
      */
     private void iniciar(int cantidad) {
-        datos = new int[cantidad];
+        int[] datos = new int[cantidad];
         String nums = "";
         for (int i = 0; i < cantidad; i++) {
             datos[i] = (int) (Math.random() * 101);
             nums += i == cantidad - 1 ? datos[i] : datos[i] + ",";
         }
 
-        if (ManejoArchivo.escribir(new String[]{nums}, new String[]{"principal"})) {
+        if (ManejoArchivo.escribir(new String[]{nums}, new String[]{"principal.u5"})) {
             System.out.println("INICIALIZACION EXITOSA");
             return;
         }
@@ -199,8 +193,8 @@ public class MezclaNatural {
      * @param nuevoPath nombre del archivo local
      */
     private void iniciar(String path, String nuevoPath) {
-        String data = ManejoArchivo.leer(path).get(0);
-        if (ManejoArchivo.escribir(new String[]{data}, new String[]{nuevoPath})) {
+        String data = ManejoArchivo.leer(path, 0);
+        if (ManejoArchivo.escribir(data, nuevoPath, true)) {
             System.out.println("copiado exitoso");
             return;
         }

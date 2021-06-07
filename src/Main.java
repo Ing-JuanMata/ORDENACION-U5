@@ -11,6 +11,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        MezclaNatural prueba = new MezclaNatural("respaldo", "principal");
+        MezclaNatural prueba = new MezclaNatural("respaldo.u5", "principal.u5");
+        System.out.println(prueba.ordenar());
     }
 }

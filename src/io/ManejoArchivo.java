@@ -5,10 +5,15 @@
  */
 package io;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -48,24 +53,67 @@ public class ManejoArchivo {
                 writer.write(lineas.get(i) + "\n");
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
             return false;
         }
 
         return true;
     }
 
-    public static ArrayList<String> leer(String path) {
+    public static boolean escribir(String dato, String path, boolean nuevo) {
         File archivo = new File(path);
-        try (Scanner reader = new Scanner(archivo)) {
-            ArrayList<String> datos = new ArrayList<>();
-            while (reader.hasNextLine()) {
-                datos.add(reader.nextLine());
+
+        try (FileOutputStream fos = new FileOutputStream(archivo, !nuevo)) {
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
+                bw.append(dato);
+                bw.newLine();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
-            return datos;
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
-            return null;
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
         }
+
+        return true;
+    }
+
+    /**
+     * Lee la linea solicitada de un archivo en especifico
+     *
+     * @param path direccion del archivo con nombre y extension
+     * @param linea numero de linea que desea leer
+     * @return los caracteres de la linea solicitada en forma de String
+     */
+    public static String leer(String path, int linea) {
+        File archivo = new File(path);
+        try (Scanner reader = new Scanner(archivo)) {
+            int i = 0;
+            while (reader.hasNextLine() && i != linea) {
+                i++;
+                reader.nextLine();
+            }
+            return reader.nextLine();
+        } catch (FileNotFoundException e) {
+            return "";
+        }
+    }
+
+    public static int contarLineas(String path) {
+        File file = new File(path);
+        int total = 0;
+        try (LineNumberReader r = new LineNumberReader(new FileReader(file))) {
+            while (r.readLine() != null) {
+            }
+            total = r.getLineNumber();
+        } catch (IOException e) {
+            return 0;
+        }
+        return total;
+    }
+
+    public static void eliminar(String path) {
+        File e = new File(path);
+        e.delete();
     }
 }

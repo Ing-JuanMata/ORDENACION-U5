@@ -10,6 +10,7 @@
 *.ear
 *.sar
 *.class
+*.u5
 nbproject/private/
 build/
 nbbuild/
