@@ -1,3 +1,5 @@
+package mezcla_natural;
+
 
 import io.ManejoArchivo;
 
