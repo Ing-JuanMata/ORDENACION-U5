@@ -99,15 +99,15 @@ public class ManejoArchivo {
         }
     }
 
-    public static int contarLineas(String path) {
+    public static long contarLineas(String path) {
         File file = new File(path);
-        int total = 0;
+        long total = 0;
         try (LineNumberReader r = new LineNumberReader(new FileReader(file))) {
             while (r.readLine() != null) {
             }
             total = r.getLineNumber();
         } catch (IOException e) {
-            return 0;
+            return total;
         }
         return total;
     }
