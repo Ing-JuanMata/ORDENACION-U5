@@ -5,6 +5,7 @@
  */
 package io;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,8 +15,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,7 +37,7 @@ public class ManejoArchivo {
         for (int i = 0; i < archivos.length; i++) {
             archivos[i] = new File(paths[i]);
 
-            try (FileWriter writer = new FileWriter(archivos[i])) {
+            try ( FileWriter writer = new FileWriter(archivos[i])) {
                 writer.write(datos[i]);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
@@ -44,7 +50,7 @@ public class ManejoArchivo {
 
     public static boolean escribir(ArrayList<String> lineas, String path) {
         File archivo = new File(path);
-        try (FileWriter writer = new FileWriter(archivo)) {
+        try ( FileWriter writer = new FileWriter(archivo)) {
             for (int i = 0; i < lineas.size(); i++) {
                 if (i == lineas.size() - 1) {
                     writer.write(lineas.get(i));
@@ -62,10 +68,9 @@ public class ManejoArchivo {
     public static boolean escribir(String dato, String path, boolean nuevo) {
         File archivo = new File(path);
 
-        try (FileOutputStream fos = new FileOutputStream(archivo, !nuevo)) {
-            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
+        try ( FileOutputStream fos = new FileOutputStream(archivo, !nuevo)) {
+            try ( BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
                 bw.append(dato);
-                bw.newLine();
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
@@ -78,6 +83,15 @@ public class ManejoArchivo {
         return true;
     }
 
+    public static boolean copiarArchivo(String origen, String destino) {
+        try {
+            Files.copy(new File(origen).toPath(), new File(destino).toPath(), StandardCopyOption.REPLACE_EXISTING);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     /**
      * Lee la linea solicitada de un archivo en especifico
      *
@@ -85,16 +99,19 @@ public class ManejoArchivo {
      * @param linea numero de linea que desea leer
      * @return los caracteres de la linea solicitada en forma de String
      */
-    public static String leer(String path, int linea) {
+    public static String leer(String path, long linea) {
         File archivo = new File(path);
-        try (Scanner reader = new Scanner(archivo)) {
-            int i = 0;
-            while (reader.hasNextLine() && i != linea) {
+        try ( BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            long i = 0;
+            String res = "";
+            while (i < linea) {
                 i++;
-                reader.nextLine();
+                res = reader.readLine();
             }
-            return reader.nextLine();
+            return res;
         } catch (FileNotFoundException e) {
+            return "";
+        } catch (IOException ex) {
             return "";
         }
     }
@@ -102,7 +119,7 @@ public class ManejoArchivo {
     public static long contarLineas(String path) {
         File file = new File(path);
         long total = 0;
-        try (LineNumberReader r = new LineNumberReader(new FileReader(file))) {
+        try ( LineNumberReader r = new LineNumberReader(new FileReader(file))) {
             while (r.readLine() != null) {
             }
             total = r.getLineNumber();

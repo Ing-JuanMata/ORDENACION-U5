@@ -1,6 +1,5 @@
 package mezcla_natural;
 
-
 import io.ManejoArchivo;
 
 /*
@@ -30,8 +29,8 @@ public class MezclaNatural {
      *
      * @param cantidad numero total de datos a generar
      */
-    public MezclaNatural(long cantidad) {
-        iniciar(cantidad);
+    public MezclaNatural(long cantidad, int min, int max) {
+        iniciar(cantidad, min, max);
     }
 
     /**
@@ -45,218 +44,204 @@ public class MezclaNatural {
         iniciar(path, nuevoPath);
     }
 
-    public String ordenar() {
-        String principal = ManejoArchivo.leer("principal.u5", 0);
+    public boolean ordenar() {
+        long total = ManejoArchivo.contarLineas("principal.u5");
+        if (total == 0) {
+            return false;
+        }
+        long lineas[] = {1, 2};
         ManejoArchivo.eliminar("aux1.u5");
         ManejoArchivo.eliminar("aux2.u5");
-        int indices[] = {0, 0, 0, 0};
 
         do {
-            if (principal.equals("")) {
-                principal = ManejoArchivo.leer("principal.u5", 0);
+            if (lineas[0] == total) {
+                lineas[0] = 1;
+                lineas[1] = 2;
                 ManejoArchivo.eliminar("aux1.u5");
                 ManejoArchivo.eliminar("aux2.u5");
             }
 
-            if (indices[0] == 0 && indices[2] == 0) {
-                while (principal.charAt(indices[1]) != ',' && indices[0] < principal.length() - 1) {
-                    indices[1]++;
-                }
-                indices[2] = indices[3] = indices[1] + 1;
-                if (indices[3] == principal.length()) {
-                    return principal;
-                }
+            escribirBloque(lineas, true, total);
+            escribirBloque(lineas, false, total);
 
-                while (principal.charAt(indices[3]) != ',' && indices[3] < principal.length() - 1) {
-                    indices[3]++;
-                }
-                if (indices[3] == principal.length() - 1) {
-                    int a = Integer.parseInt(principal.substring(indices[0], indices[1]));
-                    int b = Integer.parseInt(principal.substring(indices[2], indices[3]));
-                    return a <= b ? principal : principal.substring(indices[2]) + "," + principal.substring(indices[0], indices[1]);
-                }
+            if (lineas[0] == total) {
+                ordenarArchivo();
             }
-            escribirBloque(indices, principal, true);
-            escribirBloque(indices, principal, false);
-
-            if (indices[3] == principal.length()) {
-                String nuevo = ordenarArchivo();
-                if (!ManejoArchivo.escribir(nuevo, "principal.u5", true)) {
-                    System.out.println("ERROR DE ESCRITURA EN ARCHIVO");
-                    break;
-                }
-                if (ManejoArchivo.leer("aux2.u5", 0).equals("")) {
-                    return ManejoArchivo.leer("principal.u5", 0);
-                }
-                principal = "";
-                indices[0] = indices[1] = indices[2] = indices[3] = 0;
-            }
-        } while (true);
-
-        return "";
+        } while (!ManejoArchivo.leer("aux2.u5", 1).equals(""));
+        return true;
     }
 
-    private void escribirBloque(int[] i, String data, boolean auxA) {
-        if (i[3] == data.length()) {
+    private void escribirBloque(long[] lineas, boolean auxA, long total) {
+        if (lineas[0] == total) {
             return;
         }
+
+        int dA = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[0]));
+        int dB = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[1]));
         boolean vacio = auxA ? ManejoArchivo.contarLineas("aux1.u5") == 0 : ManejoArchivo.contarLineas("aux2.u5") == 0;
-        if (i[0] == i[2]) {
-            String d = data.substring(i[2]);
-            ManejoArchivo.escribir(d, auxA ? "aux1.u5" : "aux2.u5", vacio);
-            i[3] = data.length();
-            return;
-        }
-        if (i[3] == data.length() - 1) {
-            String d = data.substring(i[2]);
-            ManejoArchivo.escribir(d, auxA ? "aux1.u5" : "aux2.u5", vacio);
-            i[3]++;
+        boolean primero = true;
+        if (lineas[1] == total) {
+            if (dA <= dB) {
+                ManejoArchivo.escribir((!vacio ? "\n\n" : "") + dA + "\n" + dB, auxA ? "aux1.u5" : "aux2.u5", vacio);
+                lineas[0] = lineas[1];
+                return;
+            }
+            ManejoArchivo.escribir((!vacio ? "\n\n" : "") + String.valueOf(dA), auxA ? "aux1.u5" : "aux2.u5", vacio);
+            ManejoArchivo.escribir((!vacio ? "\n\n" : "") + String.valueOf(dB), !auxA ? "aux1.u5" : "aux2.u5", vacio);
+            lineas[0] = lineas[1];
             return;
         }
 
-        String a = "";
-        while (i[3] < data.length() - 1 && Integer.parseInt(data.substring(i[0], i[1])) <= Integer.parseInt(data.substring(i[2], i[3]))) {
-            a += a.equals("") ? data.substring(i[0], i[1]) : "," + data.substring(i[0], i[1]);
-            i[1] = i[3];
-            i[0] = i[2];
-            i[3]++;
-            i[2] = i[3];
-            while (data.charAt(i[3]) != ',' && i[3] < data.length() - 1) {
-                i[3]++;
-            }
-            if (i[3] == data.length() - 1) {
-                int dA = Integer.parseInt(data.substring(i[0], i[1]));
-                int dB = Integer.parseInt(data.substring(i[2]));
-                if (dA <= dB) {
-                    a += "," + data.substring(i[0]);
-                    i[3]++;
-                } else {
-                    a += "," + data.substring(i[0], i[1]);
-                    i[0] = i[1] = i[3] = i[2];
-                }
-                break;
+        while (dA <= dB && lineas[1] <= total) {
+            ManejoArchivo.escribir((primero && !vacio ? "\n\n" : "") + String.valueOf(dA) + "\n", auxA ? "aux1.u5" : "aux2.u5", vacio);
+            primero = false;
+            vacio = false;
+            lineas[0]++;
+            lineas[1]++;
+            if (lineas[1] <= total) {
+                dA = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[0]));
+                dB = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[1]));
             }
         }
-        if (i[3] < data.length() - 1 && i[0] != i[2]) {
-            if (Integer.parseInt(data.substring(i[0], i[1])) > Integer.parseInt(data.substring(i[2], i[3]))) {
-                a += a.equals("") ? data.substring(i[0], i[1]) : "," + data.substring(i[0], i[1]);
-                i[1] = i[3];
-                i[0] = i[2];
-                i[3]++;
-                i[2] = i[3];
-                while (data.charAt(i[3]) != ',' && i[3] < data.length() - 1) {
-                    i[3]++;
-                }
+
+        if (lineas[1] >= total) {
+            if (dA <= dB) {
+                ManejoArchivo.escribir((primero && !vacio ? "\n\n" : "") + String.valueOf(dB), auxA ? "aux1.u5" : "aux2.u5", vacio);
+                return;
             }
+            ManejoArchivo.escribir((ManejoArchivo.contarLineas(!auxA ? "aux1.u5" : "aux2.u5") == 0 ? "" : "\n\n") + String.valueOf(dB), !auxA ? "aux1.u5" : "aux2.u5", vacio);
         }
-        ManejoArchivo.escribir(a, auxA ? "aux1.u5" : "aux2.u5", vacio);
+
+        ManejoArchivo.escribir((primero && !vacio ? "\n\n" : "") + String.valueOf(dA), auxA ? "aux1.u5" : "aux2.u5", vacio);
+        lineas[0]++;
+        lineas[1]++;
+
     }
 
-    private String ordenarArchivo() {
+    private void ordenarArchivo() {
         System.out.println("Orden");
-        String res = "";
-        long daA = ManejoArchivo.contarLineas("aux1.u5");
-        long daB = ManejoArchivo.contarLineas("aux2.u5");
-        int dB = 0, dA = 0;
-        int i = 0;
-        int[] n = {0, 0}, m = {0, 0};
-        for (; i < daB; i++) {
-            String datosA, datosB;
-            datosA = ManejoArchivo.leer("aux1.u5", i);
-            datosB = ManejoArchivo.leer("aux2.u5", i);
-            n[0] = n[1] = m[0] = m[1] = 0;
+        long totalB = ManejoArchivo.contarLineas("aux2.u5");
 
-            while (n[0] < datosA.length() - 1 && datosA.charAt(n[0]) != ',') {
-                n[0]++;
-            }
-            dA = Integer.parseInt((n[0] == datosA.length() - 1) ? datosA.substring(m[0]) : datosA.substring(m[0], n[0]));
-            while (n[1] < datosB.length() - 1 && datosB.charAt(n[1]) != ',') {
-                n[1]++;
-            }
-            dB = Integer.parseInt((n[1] == datosB.length() - 1) ? datosB.substring(m[1]) : datosB.substring(m[1], n[1]));
-            while (true) {
+        if (totalB == 0) {
+            ManejoArchivo.copiarArchivo("aux1.u5", "principal.u5");
+            return;
+        }
+
+        long totalA = ManejoArchivo.contarLineas("aux1.u5");
+        long lineas[] = {1, 1};
+        boolean nuevo = true;
+        int dA, dB;
+        while (lineas[1] <= totalB) {
+            dA = Integer.parseInt(ManejoArchivo.leer("aux1.u5", lineas[0]));
+            dB = Integer.parseInt(ManejoArchivo.leer("aux2.u5", lineas[1]));
+            while (!ManejoArchivo.leer("aux1.u5", lineas[0]).equals("") && !ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
                 if (dA <= dB) {
-                    res += res.equals("") ? dA : "," + dA;
-                    n[0]++;
-                    m[0] = n[0];
-                    while (n[0] < datosA.length() - 1 && datosA.charAt(n[0]) != ',') {
-                        n[0]++;
-                    }
-                    if (m[0] == n[0]) {
+                    ManejoArchivo.escribir(dA + "\n", "principal.u5", nuevo);
+                    nuevo = false;
+                    lineas[0]++;
+                    if (lineas[0] > totalA) {
                         break;
                     }
-
-                    dA = Integer.parseInt((n[0] == datosA.length() - 1) ? datosA.substring(m[0]) : datosA.substring(m[0], n[0]));
-                }
-                if (n[0] == datosA.length() - 1) {
-                    if (dA <= dB) {
-                        res += res.equals("") ? dA : "," + dA;
-                        n[0]++;
-                        m[0] = n[0];
+                    if (ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
                         break;
                     } else {
-                        res += res.equals("") ? dB : "," + dB;
-                        n[1]++;
-                        m[1] = n[1];
-                        while (n[1] < datosB.length() - 1 && datosB.charAt(n[1]) != ',') {
-                            n[1]++;
-                        }
-                        if (m[1] == n[1]) {
-                            break;
-                        }
-                        dB = Integer.parseInt((n[1] == datosB.length() - 1) ? datosB.substring(m[1]) : datosB.substring(m[1], n[1]));
+                        dA = Integer.parseInt(ManejoArchivo.leer("aux1.u5", lineas[0]));
                     }
-
                 }
 
                 if (dB <= dA) {
-                    res += res.equals("") ? dB : "," + dB;
-                    n[1]++;
-                    m[1] = n[1];
-                    while (n[1] < datosB.length() - 1 && datosB.charAt(n[1]) != ',') {
-                        n[1]++;
-                    }
-                    if (m[1] == n[1]) {
+                    ManejoArchivo.escribir(dB + "\n", "principal.u5", nuevo);
+                    nuevo = false;
+                    lineas[1]++;
+                    if (lineas[1] > totalB) {
                         break;
                     }
-                    dB = Integer.parseInt((n[1] == datosB.length() - 1) ? datosB.substring(m[1]) : datosB.substring(m[1], n[1]));
-                }
-                if (n[1] == datosB.length()) {
-                    if (dB < dA) {
-                        res += res.equals("") ? dB : "," + dB;
-                        n[1]++;
-                        m[1] = n[1];
+                    if (ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
                         break;
                     } else {
-                        res += res.equals("") ? dA : "," + dA;
-                        n[0]++;
-                        m[0] = n[0];
-                        while (n[0] < datosA.length() - 1 && datosA.charAt(n[0]) != ',') {
-                            n[0]++;
-                        }
-                        if (m[0] == n[0]) {
-                            break;
-                        }
-                        dA = Integer.parseInt((n[0] == datosA.length() - 1) ? datosA.substring(m[0]) : datosA.substring(m[0], n[0]));
+                        dB = Integer.parseInt(ManejoArchivo.leer("aux2.u5", lineas[1]));
                     }
                 }
             }
 
-            if (n[0] < datosA.length()) {
-                res += res.equals("") ? datosA.substring(m[0]) : "," + datosA.substring(m[0]);
+            if (lineas[0] > totalA) {
+                while (lineas[1] <= totalB) {
+                    if (ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
+                        lineas[1]++;
+                    }
+                    if (lineas[1] == totalB) {
+                        ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]), "principal.u5", nuevo);
+                        return;
+                    }
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", "principal.u5", nuevo);
+                    lineas[1]++;
+                    if (lineas[1] > totalB) {
+                        return;
+                    }
+                }
             }
 
-            if (n[1] < datosB.length()) {
-                res += res.equals("") ? datosB.substring(m[1]) : "," + datosB.substring(m[1]);
+            if (lineas[1] > totalB) {
+                while (lineas[0] <= totalA) {
+                    if (ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
+                        lineas[0]++;
+                    }
+                    if (lineas[0] == totalA) {
+                        ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), "principal.u5", nuevo);
+                        return;
+                    }
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+                    lineas[0]++;
+                }
+            }
+
+            if (ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
+                while (!ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", "principal.u5", nuevo);
+                    lineas[1]++;
+                    if (lineas[1] > totalB) {
+                        break;
+                    }
+                }
+                lineas[0]++;
+                if (lineas[1] > totalB) {
+                    break;
+                }
+                lineas[1]++;
+                continue;
+            }
+
+            if (ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
+                while (!ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+                    lineas[0]++;
+                    if (lineas[0] > totalA) {
+                        break;
+                    }
+                }
+                lineas[1]++;
+                if (lineas[0] > totalA) {
+                    break;
+                }
+                lineas[0]++;
+
             }
         }
 
-        for (; i < daA; i++) {
-            res += res.equals("") ? ManejoArchivo.leer("aux1.u5", i) : "," + ManejoArchivo.leer("aux1.u5", i);
-
+        while (lineas[0] <= totalA) {
+            if (ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
+                lineas[0]++;
+            }
+            if (lineas[0] == totalA) {
+                ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), "principal.u5", nuevo);
+                return;
+            }
+            ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+            lineas[0]++;
+            if (lineas[0] > totalA) {
+                return;
+            }
         }
-
-        return res;
     }
 
     /**
@@ -266,11 +251,12 @@ public class MezclaNatural {
         int cantidad = datos.length;
         String nums = "";
         for (int i = 0; i < cantidad; i++) {
-            nums += i == cantidad - 1 ? datos[i] : datos[i] + ",";
+            nums += i == cantidad - 1 ? datos[i] : datos[i] + "\n";
         }
 
         if (ManejoArchivo.escribir(nums, "principal.u5", true)) {
             System.out.println("INICIALIZACION EXITOSA");
+            ManejoArchivo.copiarArchivo("principal.u5", "respaldo.u5");
             return;
         }
 
@@ -283,14 +269,15 @@ public class MezclaNatural {
      *
      * @param cantidad numero de datos a generar
      */
-    private void iniciar(long cantidad) {
+    private void iniciar(long cantidad, int min, int max) {
         String nums = "";
         for (int i = 0; i < cantidad; i++) {
-            nums += i == cantidad - 1 ? ((int) (Math.random() * 101)) : ((int) (Math.random() * 101)) + ",";
+            nums += i == cantidad - 1 ? ((int) (Math.random() * (max - min) + min + 1)) : ((int) (Math.random() * (max - min) + min + 1)) + "\n";
         }
 
-        if (ManejoArchivo.escribir(new String[]{nums, nums}, new String[]{"principal.u5", "respaldo.u5"})) {
+        if (ManejoArchivo.escribir(nums, "principal.u5", true)) {
             System.out.println("INICIALIZACION EXITOSA");
+            ManejoArchivo.copiarArchivo("principal.u5", "respaldo.u5");
             return;
         }
 
@@ -305,8 +292,7 @@ public class MezclaNatural {
      * @param nuevoPath nombre del archivo local
      */
     private void iniciar(String path, String nuevoPath) {
-        String data = ManejoArchivo.leer(path, 0);
-        if (ManejoArchivo.escribir(data, nuevoPath, true)) {
+        if (ManejoArchivo.copiarArchivo(path, nuevoPath)) {
             System.out.println("copiado exitoso");
             return;
         }
