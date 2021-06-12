@@ -11,7 +11,7 @@ package metodosInternos;
  */
 public class UI extends javax.swing.JFrame {
 
-    MétodosInternos metodos = new MétodosInternos();
+    MetodosInternos metodos = new MetodosInternos();
 
     /**
      * Creates new form UI

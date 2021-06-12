@@ -9,7 +9,7 @@ package metodosInternos;
  *
  * @author codeboy1028
  */
-public class MétodosInternos {
+public class MetodosInternos {
     
      public int[] A= new int[65535];
    
