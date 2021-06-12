@@ -13,8 +13,8 @@ import io.ManejoArchivo;
  */
 public class Intercalacion {
     
-    protected int[] arregloA;
-    protected int[] arregloB;
+    private int[] arregloA;
+    private int[] arregloB;
     protected int[] arregloC;
     
     public Intercalacion(int[] datosA, int[] datosB) {
