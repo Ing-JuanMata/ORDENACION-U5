@@ -18,11 +18,63 @@ public class Intercalacion {
     protected int[] arregloC;
     
     public Intercalacion(int[] datosA, int[] datosB) {
-        arregloA = datosA;
-        arregloB = datosB;
+        iniciar(datosA, datosB);
+    }
+    
+    private void iniciar(int[] datosA, int[] datosB) {
+        int cantidadA = datosA.length;
+        int cantidadB = datosB.length;
+        
+        String nums = "";
+        
+        for (int i = 0; i < cantidadA; i++) {
+            nums += i == cantidadA - 1 ? datosA[i] : datosA[i] + "\n";
+        }
+        
+        for (int i = 0; i < cantidadB; i++) {
+            nums += i == cantidadB - 1 ? datosB[i] : datosB[i] + "\n";
+        }
+        
+        if (ManejoArchivo.escribir(nums, "IntercalacionA.u5", true)) {
+            System.out.println("INICIALIZACION EXITOSA");
+            ManejoArchivo.copiarArchivo("IntercalacionA.u5", "respaldoA.u5");
+            return;
+        }
+        
+        if (ManejoArchivo.escribir(nums, "IntercalacionB.u5", true)) {
+            System.out.println("INICIALIZACION EXITOSA");
+            ManejoArchivo.copiarArchivo("IntercalacionB.u5", "respaldoB.u5");
+            return;
+        }
+        
+        
+
+        System.out.println("FALLO DE INICIALIZACION");
+    }
+    
+    public Intercalacion(String pathA, String pathB) {
+        iniciar(pathA, pathB);
+    }
+    
+    private void iniciar(String pathA, String pathB) {
+        if (ManejoArchivo.copiarArchivo(pathA, "IntercalacionA.u5") && ManejoArchivo.copiarArchivo(pathB, "IntercalacionB.u5")) {
+            System.out.println("copiado exitoso");
+            return;
+        }
+
+        System.out.println("Fallo en el copiado");
     }
     
     public boolean ordenar(){
+        long totalA = ManejoArchivo.contarLineas("IntercalacionA.u5");
+        long totalB = ManejoArchivo.contarLineas("IntercalacionB.u5");
+        
+        if (totalA == 0 || totalB == 0) return false;
+        
+        long lineas[] = {1, 2};
+        
+        ManejoArchivo.eliminar("aux1.u5");
+        ManejoArchivo.eliminar("aux2.u5");
         
         if( (arregloA.length + arregloB.length) > 65535 ) return false;
         
