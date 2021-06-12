@@ -11,17 +11,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 /**
  *
@@ -29,42 +24,15 @@ import java.util.logging.Logger;
  */
 public class ManejoArchivo {
 
-    public static boolean escribir(String[] datos, String[] paths) {
-        if (datos.length != paths.length) {
-            return false;
-        }
-        File[] archivos = new File[paths.length];
-        for (int i = 0; i < archivos.length; i++) {
-            archivos[i] = new File(paths[i]);
-
-            try ( FileWriter writer = new FileWriter(archivos[i])) {
-                writer.write(datos[i]);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean escribir(ArrayList<String> lineas, String path) {
-        File archivo = new File(path);
-        try ( FileWriter writer = new FileWriter(archivo)) {
-            for (int i = 0; i < lineas.size(); i++) {
-                if (i == lineas.size() - 1) {
-                    writer.write(lineas.get(i));
-                    break;
-                }
-                writer.write(lineas.get(i) + "\n");
-            }
-        } catch (IOException e) {
-            return false;
-        }
-
-        return true;
-    }
-
+    /**
+     * Escribe un archivo ya sea desde el principio o agregando datos segun se
+     * solicite
+     *
+     * @param dato valor que se va a agregar
+     * @param path direccion del archivo
+     * @param nuevo verdadero si el dato va a inicializar el archivo
+     * @return
+     */
     public static boolean escribir(String dato, String path, boolean nuevo) {
         File archivo = new File(path);
 
@@ -83,6 +51,13 @@ public class ManejoArchivo {
         return true;
     }
 
+    /**
+     * Se encarga de crear una copia precisa del archivo original
+     *
+     * @param origen dato original
+     * @param destino lugar donde se va a almacenar la copia
+     * @return verdadero si se pudo efectuar el copiado
+     */
     public static boolean copiarArchivo(String origen, String destino) {
         try {
             Files.copy(new File(origen).toPath(), new File(destino).toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -100,35 +75,37 @@ public class ManejoArchivo {
      * @return los caracteres de la linea solicitada en forma de String
      */
     public static String leer(String path, long linea) {
-        File archivo = new File(path);
-        try ( BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            long i = 0;
-            String res = "";
-            while (i < linea) {
-                i++;
-                res = reader.readLine();
-            }
+        try ( Stream<String> lineas = Files.lines(Paths.get(path))) {
+            String res = lineas.skip(linea - 1).findFirst().get();
             return res;
-        } catch (FileNotFoundException e) {
-            return "";
         } catch (IOException ex) {
             return "";
         }
     }
 
+    /**
+     * Regresa el numero de lineas contenido en un documento
+     *
+     * @param path direccion del archivo a contar
+     * @return numero de lineas
+     */
     public static long contarLineas(String path) {
-        File file = new File(path);
-        long total = 0;
-        try ( LineNumberReader r = new LineNumberReader(new FileReader(file))) {
-            while (r.readLine() != null) {
-            }
-            total = r.getLineNumber();
-        } catch (IOException e) {
-            return total;
+        try ( BufferedReader bf = new BufferedReader(new FileReader(path))) {
+            return bf.lines().count();
+        } catch (FileNotFoundException ex) {
+
+        } catch (IOException ex) {
+
         }
-        return total;
+
+        return 0;
     }
 
+    /**
+     * Borra un determinado archivo
+     *
+     * @param path direccion del archivo a eliminar
+     */
     public static void eliminar(String path) {
         File e = new File(path);
         e.delete();

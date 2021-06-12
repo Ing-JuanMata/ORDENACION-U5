@@ -1,47 +1,47 @@
-package mezcla_natural;
-
-import io.ManejoArchivo;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package metodos_externos;
+
+import io.ManejoArchivo;
+
 /**
  *
  * @author ING-JUANMATA
  */
-public class MezclaNatural {
+public class MezclaDirecta {
 
     /**
-     * Constructor que inicializa los datos de ordenamiento desde un determinado
-     * arreglo de enteros
+     * Constructor para iniciar el documento con un array de datos
+     * preestablecido
      *
-     * @param datos datos que se desean ordenar
+     * @param datos datos a guardar en el documento
      */
-    public MezclaNatural(int[] datos) {
+    public MezclaDirecta(int[] datos) {
         iniciar(datos);
     }
 
     /**
-     * Constructor que inicializa los datos de forma aleatoria limitandose a la
-     * cantidad de datos solicitada por el usuario
+     * Constructor para generar el documento con una cantidad determinada de
+     * numeros en un ragno de valores enteros
      *
-     * @param cantidad numero total de datos a generar
+     * @param cantidad total de datos a generar
+     * @param min valor minimo a generar
+     * @param max valor maximo a generar
      */
-    public MezclaNatural(long cantidad, int min, int max) {
+    public MezclaDirecta(long cantidad, int min, int max) {
         iniciar(cantidad, min, max);
     }
 
     /**
-     * constructor que obtiene los datos por copia de algun archivo dado por el
-     * usuario
+     * Copia de un archivo de datos para ser usado por el metodo de ordenamiento
      *
-     * @param path direccion de donde se encuentra el archivo original
-     * @param nuevoPath nombre que se le dara a la copia
+     * @param path direccion del archivo original
      */
-    public MezclaNatural(String path, String nuevoPath) {
-        iniciar(path, nuevoPath);
+    public MezclaDirecta(String path) {
+        iniciar(path);
     }
 
     public boolean ordenar() {
@@ -52,70 +52,40 @@ public class MezclaNatural {
         long lineas[] = {1, 2};
         ManejoArchivo.eliminar("aux1.u5");
         ManejoArchivo.eliminar("aux2.u5");
-
+        long tam = 1;
         do {
-            if (lineas[0] == total) {
-                lineas[0] = 1;
-                lineas[1] = 2;
+            if (lineas[0] > total) {
+                ordenarArchivo();
+                tam *= 2;
                 ManejoArchivo.eliminar("aux1.u5");
                 ManejoArchivo.eliminar("aux2.u5");
+                lineas[0] = 1;
+                lineas[1] = tam + 1;
+            }
+            if (tam < total) {
+                escribirBloque(lineas, tam, true, total);
+                escribirBloque(lineas, tam, false, total);
             }
 
-            escribirBloque(lineas, true, total);
-            escribirBloque(lineas, false, total);
-
-            if (lineas[0] == total) {
-                ordenarArchivo();
-            }
-        } while (!ManejoArchivo.leer("aux2.u5", 1).equals(""));
+        } while (tam < total);
+        ManejoArchivo.eliminar("aux1.u5");
+        ManejoArchivo.eliminar("aux2.u5");
         return true;
     }
 
-    private void escribirBloque(long[] lineas, boolean auxA, long total) {
-        if (lineas[0] == total) {
-            return;
-        }
-
-        int dA = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[0]));
-        int dB = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[1]));
+    private void escribirBloque(long lineas[], long tam, boolean auxA, long total) {
+        long aux = tam;
         boolean vacio = auxA ? ManejoArchivo.contarLineas("aux1.u5") == 0 : ManejoArchivo.contarLineas("aux2.u5") == 0;
         boolean primero = true;
-        if (lineas[1] == total) {
-            if (dA <= dB) {
-                ManejoArchivo.escribir((!vacio ? "\n\n" : "") + dA + "\n" + dB, auxA ? "aux1.u5" : "aux2.u5", vacio);
-                lineas[0] = lineas[1];
-                return;
-            }
-            ManejoArchivo.escribir((!vacio ? "\n\n" : "") + String.valueOf(dA), auxA ? "aux1.u5" : "aux2.u5", vacio);
-            ManejoArchivo.escribir((!vacio ? "\n\n" : "") + String.valueOf(dB), !auxA ? "aux1.u5" : "aux2.u5", vacio);
-            lineas[0] = lineas[1];
-            return;
-        }
-
-        while (dA <= dB && lineas[1] <= total) {
-            ManejoArchivo.escribir((primero && !vacio ? "\n\n" : "") + String.valueOf(dA) + "\n", auxA ? "aux1.u5" : "aux2.u5", vacio);
+        int dA;
+        for (; lineas[auxA ? 0 : 1] <= total && aux > 0; lineas[auxA ? 0 : 1]++, aux--) {
+            dA = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[auxA ? 0 : 1]));
+            ManejoArchivo.escribir((primero && !vacio ? "\n\n" : "") + String.valueOf(dA) + (aux - 1 > 0 && lineas[auxA ? 0 : 1] + 1 <= total ? "\n" : ""), auxA ? "aux1.u5" : "aux2.u5", vacio);
             primero = false;
             vacio = false;
-            lineas[0]++;
-            lineas[1]++;
-            if (lineas[1] <= total) {
-                dA = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[0]));
-                dB = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[1]));
-            }
         }
 
-        if (lineas[1] >= total) {
-            if (dA <= dB) {
-                ManejoArchivo.escribir((primero && !vacio ? "\n\n" : "") + String.valueOf(dB), auxA ? "aux1.u5" : "aux2.u5", vacio);
-                return;
-            }
-            ManejoArchivo.escribir((ManejoArchivo.contarLineas(!auxA ? "aux1.u5" : "aux2.u5") == 0 ? "" : "\n\n") + String.valueOf(dB), !auxA ? "aux1.u5" : "aux2.u5", vacio);
-        }
-
-        ManejoArchivo.escribir((primero && !vacio ? "\n\n" : "") + String.valueOf(dA), auxA ? "aux1.u5" : "aux2.u5", vacio);
-        lineas[0]++;
-        lineas[1]++;
-
+        lineas[auxA ? 0 : 1] = lineas[auxA ? 1 : 0] + tam;
     }
 
     private void ordenarArchivo() {
@@ -289,10 +259,9 @@ public class MezclaNatural {
      * Inicializador que se encarga de la copia de datos a un archivo interno
      *
      * @param path direccion del archivo original
-     * @param nuevoPath nombre del archivo local
      */
-    private void iniciar(String path, String nuevoPath) {
-        if (ManejoArchivo.copiarArchivo(path, nuevoPath)) {
+    private void iniciar(String path) {
+        if (ManejoArchivo.copiarArchivo(path, "principal.u5")) {
             System.out.println("copiado exitoso");
             return;
         }

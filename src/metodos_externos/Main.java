@@ -1,4 +1,4 @@
-package mezcla_natural;
+package metodos_externos;
 
 import io.ManejoArchivo;
 
@@ -14,7 +14,7 @@ import io.ManejoArchivo;
 public class Main {
 
     public static void main(String[] args) {
-        MezclaNatural prueba = new MezclaNatural("respaldo.u5", "principal.u5");
+        MezclaDirecta prueba = new MezclaDirecta(10000, 1, 999);
         long inicio = System.currentTimeMillis();
         prueba.ordenar();
         System.out.println(System.currentTimeMillis() - inicio);
