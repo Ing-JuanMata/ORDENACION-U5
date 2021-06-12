@@ -110,6 +110,9 @@ public class Intercalacion {
             //arregloC[k] = arregloB[j];
             arregloC += ManejoArchivo.leer("IntercalacionB.u5", j) + "\n";
         }
+        
+        ManejoArchivo.copiarArchivo(arregloC, "IntercalacionC.u5");
+        
     }
     
 }

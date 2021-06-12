@@ -2,6 +2,7 @@ package metodos_externos;
 
 //import io.ManejoArchivo;
 import metodosInternos.MetodosInternos;
+import io.ManejoArchivo;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,23 +25,28 @@ public class Main {
         System.out.println(ManejoArchivo.contarLineas("principal.u5"));
         */
         
+        
         /*
-        //NOTA: MODIFICAR EL TAMAÑO DEL ATRIBUTO A EN METODOS INTERNOS, DEBIDO A QUE
-        //EL METODO DE INTERCALACION REQUIERE CREAR UN TERCER ARREGLO QUE SEA LA SUMA DEL
-        //TAMAÑO DE LOS ARREGLOS QUE ENVIAMOS.
+        //INTERCALACION
+        MetodosInternos arregloA = new MetodosInternos();
+        MetodosInternos arregloB = new MetodosInternos();
         
-        int[] arreglo1 = {10,20,30,40,50,60,70,80};
-        int[] arreglo2 = {90,100,200,300,400,500};
+        arregloA.burbuja();
+        arregloB.burbuja();
         
+        Intercalacion prueba2 = new Intercalacion(arregloA.A, arregloB.A);
         
-        Intercalacion obj = new Intercalacion(arreglo1, arreglo2);
-        boolean respuesta = obj.ordenar();
-        if (respuesta == true) {
-            for (int i = 0; i < obj.arregloC.length; i++) {
-                System.out.println( obj.arregloC[i] + "\n" );
-            }
-        }
-*/
+        System.out.println(arregloA.Impresion()+"\n");
+        System.out.println("--------------------------------");
+        System.out.println(arregloB.Impresion()+"\n");
+        
+        prueba2.ordenar();
+        
+        long inicio = System.currentTimeMillis();
+        prueba2.ordenar();
+        System.out.println(System.currentTimeMillis() - inicio);
+        System.out.println(ManejoArchivo.contarLineas("IntercalacionC.u5"));
+        */
         
     }
 }
