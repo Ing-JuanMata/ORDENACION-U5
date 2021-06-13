@@ -16,7 +16,7 @@ public class MetodosInternos {
     
     public void arreglo(){
           for(int n=0; n < 65535; n++){
-          double v = Math.random()*100;
+          double v = Math.random()*1000000000;
         int d = (int)v;
         A[n]=d;
         }
