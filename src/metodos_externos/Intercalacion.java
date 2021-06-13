@@ -13,10 +13,6 @@ import io.ManejoArchivo;
  */
 public class Intercalacion {
     
-    private int[] arregloA;
-    private int[] arregloB;
-    protected int[] arregloC;
-    
     public Intercalacion(int[] datosA, int[] datosB) {
         iniciar(datosA, datosB);
     }
@@ -25,24 +21,20 @@ public class Intercalacion {
         int cantidadA = datosA.length;
         int cantidadB = datosB.length;
         
-        String nums = "";
+        String numsA = "";
+        String numsB = "";
         
         for (int i = 0; i < cantidadA; i++) {
-            nums += i == cantidadA - 1 ? datosA[i] : datosA[i] + "\n";
+            numsA += i == cantidadA - 1 ? datosA[i] : datosA[i] + "\n";
         }
         
         for (int i = 0; i < cantidadB; i++) {
-            nums += i == cantidadB - 1 ? datosB[i] : datosB[i] + "\n";
+            numsB += i == cantidadB - 1 ? datosB[i] : datosB[i] + "\n";
         }
         
-        if (ManejoArchivo.escribir(nums, "IntercalacionA.u5", true)) {
+        if (ManejoArchivo.escribir(numsA, "IntercalacionA.u5", true) && ManejoArchivo.escribir(numsB, "IntercalacionB.u5", true)) {
             System.out.println("INICIALIZACION EXITOSA");
             ManejoArchivo.copiarArchivo("IntercalacionA.u5", "respaldoA.u5");
-            return;
-        }
-        
-        if (ManejoArchivo.escribir(nums, "IntercalacionB.u5", true)) {
-            System.out.println("INICIALIZACION EXITOSA");
             ManejoArchivo.copiarArchivo("IntercalacionB.u5", "respaldoB.u5");
             return;
         }
@@ -57,6 +49,11 @@ public class Intercalacion {
     }
     
     private void iniciar(String pathA, String pathB) {
+        
+        ManejoArchivo.eliminar("IntercalacionA");
+        ManejoArchivo.eliminar("IntercalacionB");
+        
+        
         if (ManejoArchivo.copiarArchivo(pathA, "IntercalacionA.u5") && ManejoArchivo.copiarArchivo(pathB, "IntercalacionB.u5")) {
             System.out.println("copiado exitoso");
             return;
@@ -82,36 +79,35 @@ public class Intercalacion {
         
         //tamaño del tercer arreglo
         String arregloC = "";
-        long totalC = totalA + totalB;
         
-        long i,j,k;
+        long i,j;
         
         //Repetir mientras los arreglos A y B tengan elementos que comparar
-        for (i = j = 0; i < totalA && j < totalB;) {
+        for (i = j = 1; i <= totalA && j <= totalB;) {
             if (Integer.parseInt(ManejoArchivo.leer("IntercalacionA.u5", i)) < Integer.parseInt(ManejoArchivo.leer("IntercalacionB.u5", j))) {
-                //arregloC[k] = arregloA[i];
                 arregloC += ManejoArchivo.leer("IntercalacionA.u5", i) + "\n";
                 i++;
             }else{
-                //arregloC[k] = arregloB[j];
                 arregloC += ManejoArchivo.leer("IntercalacionB.u5", j) + "\n";
                 j++;
             }
         }
         
         //Para añadir a arregloC los elementos del arregloA sobrantes en caso de que haya
-        for (; i < totalA; i++) {
+        for (; i <= totalA; i++) {
             //arregloC[k] = arregloA[i];
             arregloC += ManejoArchivo.leer("IntercalacionA.u5", i) + "\n";
         }
         
         //Para añadir a arregloC los elementos del arregloB sobrantes en caso de que haya
-        for (; j < totalB; j++) {
+        for (; j <= totalB; j++) {
             //arregloC[k] = arregloB[j];
             arregloC += ManejoArchivo.leer("IntercalacionB.u5", j) + "\n";
         }
         
-        ManejoArchivo.copiarArchivo(arregloC, "IntercalacionC.u5");
+        ManejoArchivo.eliminar("IntercalacionC");
+        
+        ManejoArchivo.escribir(arregloC, "IntercalacionC.u5", true);
         
     }
     
