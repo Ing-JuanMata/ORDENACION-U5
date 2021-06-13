@@ -1,5 +1,5 @@
 *.7z
-.jar
+*.jar
 *.dmg
 *.gz
 *.iso
