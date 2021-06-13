@@ -29,15 +29,27 @@ public class Main {
         
         //INTERCALACION
         
-        /*
+        
         MetodosInternos arregloA = new MetodosInternos();
         MetodosInternos arregloB = new MetodosInternos();
         
+        arregloA.arreglo();
         arregloA.burbuja();
-        arregloB.burbuja();
+        arregloB.arreglo();
+        arregloB.shell();
         
-        */
+        for (int i = 0; i < arregloA.A.length; i++) {
+            System.out.println(arregloA.A[i]);
+        }
         
+        System.out.println("--------------");
+        
+        for (int i = 0; i < arregloB.A.length; i++) {
+            System.out.println(arregloB.A[i]);
+        }
+        
+        
+        /*
         int[] arregloB = {10,20,30,40,50,60,70};
         int[] arregloA = {80,90,100,110,120,130,140};
         
@@ -50,14 +62,16 @@ public class Main {
         for (int i = 0; i < arregloB.length; i++) {
             System.out.println(arregloB[i]);
         }
+        */
         
-        Intercalacion prueba2 = new Intercalacion(arregloA, arregloB);
+        
+        Intercalacion prueba2 = new Intercalacion(arregloA.A, arregloB.A);
         prueba2.ordenar();
         
         long inicio = System.currentTimeMillis();
         prueba2.ordenar();
-        System.out.println(System.currentTimeMillis() - inicio);
-        System.out.println(ManejoArchivo.contarLineas("IntercalacionC.u5"));
+        System.out.println("Tiempo: " + (System.currentTimeMillis() - inicio));
+        System.out.println("Numero de lineas: "+ManejoArchivo.contarLineas("IntercalacionC.u5"));
         
         
     }

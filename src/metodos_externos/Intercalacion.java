@@ -18,6 +18,10 @@ public class Intercalacion {
     }
     
     private void iniciar(int[] datosA, int[] datosB) {
+        
+        ManejoArchivo.eliminar("IntercalacionA");
+        ManejoArchivo.eliminar("IntercalacionB");
+        
         int cantidadA = datosA.length;
         int cantidadB = datosB.length;
         
