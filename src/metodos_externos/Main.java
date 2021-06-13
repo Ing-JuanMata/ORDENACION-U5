@@ -33,14 +33,6 @@ public class Main {
         MetodosInternos arregloA = new MetodosInternos();
         MetodosInternos arregloB = new MetodosInternos();
         
-        for(int i = 0; i < 65535; i++){
-            arregloA.A[i] = (int) (Math.random() * (10000 - 1) + 1 + 1);
-        }
-        
-        for(int i=0; i < 65535; i++){
-            arregloB.A[i] = (int) (Math.random() * (10000 - 1) + 1 + 1);
-        }
-        
         arregloA.burbuja();
         arregloB.burbuja();
         
