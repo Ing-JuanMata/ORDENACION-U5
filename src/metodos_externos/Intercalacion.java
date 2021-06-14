@@ -38,8 +38,8 @@ public class Intercalacion {
         
         if (ManejoArchivo.escribir(numsA, "IntercalacionA.u5", true) && ManejoArchivo.escribir(numsB, "IntercalacionB.u5", true)) {
             System.out.println("INICIALIZACION EXITOSA");
-            ManejoArchivo.copiarArchivo("IntercalacionA.u5", "respaldoA.u5");
-            ManejoArchivo.copiarArchivo("IntercalacionB.u5", "respaldoB.u5");
+            ManejoArchivo.copiarArchivo("IntercalacionA.u5", "respaldoIntercalacionA.u5");
+            ManejoArchivo.copiarArchivo("IntercalacionB.u5", "respaldoIntercalacionB.u5");
             return;
         }
         
@@ -65,17 +65,33 @@ public class Intercalacion {
 
         System.out.println("Fallo en el copiado");
     }
+<<<<<<< Updated upstream
     
     public boolean ordenar(){
         
         //if( (ManejoArchivo.contarLineas("IntercalacionA.u5") + ManejoArchivo.contarLineas("IntercalacionB.u5")) > 65535 ) return false;
         
+=======
+/*
+    public boolean ordenar() {
+
+        MezclaNatural ordenar = new MezclaNatural("IntercalacionA.u5", "IntercalacionA.u5");
+        ordenar.ordenar();
+        ordenar = new MezclaNatural("IntercalacionB.u5", "IntercalacionB.u5");
+        ordenar.ordenar();
+>>>>>>> Stashed changes
         ordenarIntercalacion();
         
         return true;
+<<<<<<< Updated upstream
     }     
     
     private void ordenarIntercalacion() {
+=======
+    }
+*/
+    public void ordenar() {
+>>>>>>> Stashed changes
         long totalA = ManejoArchivo.contarLineas("IntercalacionA.u5");
         long totalB = ManejoArchivo.contarLineas("IntercalacionB.u5");
         
@@ -99,14 +115,22 @@ public class Intercalacion {
         
         //Para añadir a arregloC los elementos del arregloA sobrantes en caso de que haya
         for (; i <= totalA; i++) {
+<<<<<<< Updated upstream
             //arregloC[k] = arregloA[i];
             arregloC += ManejoArchivo.leer("IntercalacionA.u5", i) + "\n";
+=======
+            ManejoArchivo.escribir(ManejoArchivo.leer("IntercalacionA.u5", i) + (i == totalA ? "" : "\n"), "IntercalacionC.u5", false);
+>>>>>>> Stashed changes
         }
         
         //Para añadir a arregloC los elementos del arregloB sobrantes en caso de que haya
         for (; j <= totalB; j++) {
+<<<<<<< Updated upstream
             //arregloC[k] = arregloB[j];
             arregloC += ManejoArchivo.leer("IntercalacionB.u5", j) + "\n";
+=======
+            ManejoArchivo.escribir(ManejoArchivo.leer("IntercalacionB.u5", j) + (j == totalB ? "" : "\n"), "IntercalacionC.u5", false);
+>>>>>>> Stashed changes
         }
         
         ManejoArchivo.eliminar("IntercalacionC");

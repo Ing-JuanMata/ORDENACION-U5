@@ -12,6 +12,7 @@ package metodosInternos;
 public class MetodosInternos {
     
      public int[] A;
+<<<<<<< Updated upstream
     
     public void arreglo(){
         A = new int[10000];
@@ -19,6 +20,25 @@ public class MetodosInternos {
           double v = Math.random()*10000;
         int d = (int)v;
         A[n]=d;
+=======
+   
+    
+    public void arreglo(){
+        A = new int[65535];
+        for(int n=0; n < 65535; n++){
+            double v = Math.random()*1000000000;
+            int d = (int)v;
+            A[n]=d;
+        }
+    }
+    
+    public void arreglo(int cantidad, int min, int max){
+        A = new int[cantidad];
+        for(int n=0; n < cantidad; n++){
+            double v = (Math.random() * (max - min) + min + 1);
+            int d = (int)v;
+            A[n]=d;
+>>>>>>> Stashed changes
         }
     }
     

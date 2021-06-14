@@ -33,37 +33,10 @@ public class Main {
         MetodosInternos arregloA = new MetodosInternos();
         MetodosInternos arregloB = new MetodosInternos();
         
-        arregloA.arreglo();
+        arregloA.arreglo(1000,1,99999);
         arregloA.burbuja();
-        arregloB.arreglo();
+        arregloB.arreglo(1000,1,99999);
         arregloB.shell();
-        
-        for (int i = 0; i < arregloA.A.length; i++) {
-            System.out.println(arregloA.A[i]);
-        }
-        
-        System.out.println("--------------");
-        
-        for (int i = 0; i < arregloB.A.length; i++) {
-            System.out.println(arregloB.A[i]);
-        }
-        
-        
-        /*
-        int[] arregloB = {10,20,30,40,50,60,70};
-        int[] arregloA = {80,90,100,110,120,130,140};
-        
-        
-        
-        for (int i = 0; i < arregloA.length; i++) {
-            System.out.println(arregloA[i]);
-        }
-        
-        for (int i = 0; i < arregloB.length; i++) {
-            System.out.println(arregloB[i]);
-        }
-        */
-        
         
         Intercalacion prueba2 = new Intercalacion(arregloA.A, arregloB.A);
         prueba2.ordenar();
