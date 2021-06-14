@@ -11,14 +11,23 @@ package metodosInternos;
  */
 public class MetodosInternos {
     
-     public int[] A= new int[65535];
-   
+     public int[] A;
     
     public void arreglo(){
-          for(int n=0; n < 65535; n++){
-          double v = Math.random()*1000000000;
+        A = new int[10000];
+          for(int n=0; n < A.length; n++){
+          double v = Math.random()*10000;
         int d = (int)v;
         A[n]=d;
+        }
+    }
+    
+    public void arreglo(int cantidad, int min, int max){
+        A = new int[cantidad];
+        for(int n = 0; n < A.length; n++){
+            double v = (Math.random() * (max - min) + min + 1);
+            int d = (int)v;
+            A[n]=d;
         }
     }
 
@@ -31,7 +40,7 @@ public class MetodosInternos {
             cambios = true;
             while (cambios) {   // Mientras se intercambie algún elemento                                         
                 cambios = false;
-                for (i = salto; i < 65535; i++) // se da una pasada
+                for (i = salto; i < A.length; i++) // se da una pasada
                 {
                     if (A[i - salto] > A[i]) {       // y si están desordenados
                         aux = A[i];                  // se reordenan
@@ -102,8 +111,8 @@ public class MetodosInternos {
     
     public void burbuja(){
         int Aux=0;
-        for(int i=0;i< 65535; i++){
-            for(int j=i+1;j< 65535;j++){
+        for(int i=0;i< A.length; i++){
+            for(int j=i+1;j< A.length;j++){
                 if(A[j]<A[i]){
                     Aux=A[i];
                     A[i]=A[j];
@@ -148,7 +157,7 @@ public class MetodosInternos {
     
     public String  Impresion (){
       String cad="";
-      for (int i = 0; i < 65535; i++) {
+      for (int i = 0; i < A.length; i++) {
       cad+= (i+":["+A[i]+"]  ");
       if (i%10 == 0){
           cad+="\n";
