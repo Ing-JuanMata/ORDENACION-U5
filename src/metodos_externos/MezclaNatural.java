@@ -46,7 +46,7 @@ public class MezclaNatural {
     }
 
     public boolean ordenar() {
-        long total = ManejoArchivo.contarLineas("principal.u5");
+        long total = ManejoArchivo.contarLineas(destino);
         if (total == 0) {
             return false;
         }
