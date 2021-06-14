@@ -45,60 +45,26 @@ public class MetodosInternos {
     }
     
     public void radix(){
-         if(A.length == 0)
-
-
-           return;
-
-
-         int[][] np = new int[A.length][2];
-
-
-        int[] q = new int[0x100];
-
-
-       int i,j,k,l,f = 0;
-
-
-        for(k=0;k<4;k++){
-
-
-           for(i=0;i<(np.length-1);i++)
-               np[i][1] = i+1;
-           np[i][1] = -1;
-           
-           for(i=0;i<q.length;i++)
-               q[i] = -1;
-
-           for(f=i=0;i<A.length;i++){
-                  j = ((0xFF<<(k<<3))&A[i])>>(k<<3);
-               if(q[j] == -1)
-                  l = q[j] = f;
-
-               else{
-
-                   l = q[j];
-
-                   while(np[l][1] != -1)
-
-
-                       l = np[l][1];
-                       np[l][1] = f;
-                       l = np[l][1];
-               }
-                        f = np[f][1];
-                        np[l][0] = A[i];
-                        np[l][1] = -1;
-           }
-                         for(l=q[i=j=0];i<0x100;i++)
-                         for(l=q[i];l!=-1;l=np[l][1])
-                         A[j++] = np[l][0];
-
-
-       }
-
-        
+        int x,i,j;
+        for(x=Integer.SIZE; x>=0; x--){
+            int auxiliar[] = new int[A.length];
+            j=0;
+            for(i =0; i<A.length; i++){
+                boolean mover = A[i] << x >=0;
+                if(x==0 ? !mover:mover){
+                    auxiliar[j]=A[i];
+                    j++;
+                }else{
+                    A[i-j]=A[i];
+                }
+            }
+            for(i=j; i<auxiliar.length; i++){
+                auxiliar[i]=A[i-j];
+            }
+            A=auxiliar;
+        }
     }
+    
     
     public void burbuja(){
         int Aux=0;
