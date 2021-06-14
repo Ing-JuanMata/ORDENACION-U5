@@ -5,11 +5,7 @@
  */
 package metodos_externos;
 
-<<<<<<< Updated upstream
-import metodosInternos.MetodosInternos;
-=======
 import io.ManejoArchivo;
->>>>>>> Stashed changes
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -24,15 +20,9 @@ public class UI extends javax.swing.JFrame {
     MezclaNatural natural;
     MezclaDirecta directa;
     Intercalacion intercalacion;
-<<<<<<< Updated upstream
-    
-    MetodosInternos arregloA;
-    MetodosInternos arregloB;
-=======
     MetodosInternos arregloA;
     MetodosInternos arregloB;
     
->>>>>>> Stashed changes
 
     /**
      * Creates new form UI
@@ -168,17 +158,13 @@ public class UI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        
         if (txtCantidad.getText().equals("") || txtMinimo.getText().equals("") || txtMaximo.getText().equals("")) {
             return;
         }
         
-<<<<<<< Updated upstream
-=======
         ManejoArchivo.eliminar("arregloA.u5");
         ManejoArchivo.eliminar("arregloB.u5");
         
->>>>>>> Stashed changes
         int cantidad = Integer.parseInt(txtCantidad.getText());
         int minimo = Integer.parseInt(txtMinimo.getText());
         int maximo = Integer.parseInt(txtMaximo.getText());
@@ -188,8 +174,6 @@ public class UI extends javax.swing.JFrame {
         
         arregloA.arreglo(cantidad, minimo, maximo);
         arregloB.arreglo(cantidad, minimo, maximo);
-<<<<<<< Updated upstream
-=======
         
         String numsA = "";
         String numsB = "";
@@ -212,7 +196,6 @@ public class UI extends javax.swing.JFrame {
         }
         
         
->>>>>>> Stashed changes
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnOrdenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdenarActionPerformed
@@ -220,34 +203,20 @@ public class UI extends javax.swing.JFrame {
         long tiempo;
         switch (comboMetodos.getSelectedIndex()) {
             case 0:
-<<<<<<< Updated upstream
-                natural = new MezclaNatural(arregloA.A);
-=======
                 natural = new MezclaNatural("arregloA.u5");
->>>>>>> Stashed changes
                 tiempo = System.currentTimeMillis();
                 natural.ordenar();
                 tiempo = System.currentTimeMillis() - tiempo;
                 JOptionPane.showMessageDialog(this, "La ordenacion ha durado: " + tiempo / 1000 + " segundos", "TIEMPO EJECUCION", JOptionPane.INFORMATION_MESSAGE);
                 break;
             case 1:
-<<<<<<< Updated upstream
-                directa = new MezclaDirecta(arregloA.A);
-=======
                 directa = new MezclaDirecta("arregloA.u5");
->>>>>>> Stashed changes
                 tiempo = System.currentTimeMillis();
                 directa.ordenar();
                 tiempo = System.currentTimeMillis() - tiempo;
                 JOptionPane.showMessageDialog(this, "La ordenacion ha durado: " + tiempo / 1000 + " segundos", "TIEMPO EJECUCION", JOptionPane.INFORMATION_MESSAGE);
                 break;
             case 2:
-<<<<<<< Updated upstream
-                arregloA.burbuja();
-                arregloB.burbuja();
-
-                intercalacion = new Intercalacion(arregloA.A, arregloB.A);
-=======
                 arregloA.Quicksort();
                 arregloB.Quicksort();
                 
@@ -278,7 +247,6 @@ public class UI extends javax.swing.JFrame {
                 
                 
                 intercalacion = new Intercalacion("arregloA.u5", "arregloB.u5");
->>>>>>> Stashed changes
                 tiempo = System.currentTimeMillis();
                 intercalacion.ordenar();
                 tiempo = System.currentTimeMillis() - tiempo;

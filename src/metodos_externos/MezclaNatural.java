@@ -13,6 +13,8 @@ import io.ManejoArchivo;
  */
 public class MezclaNatural {
 
+    private String destino = "principal.u5";
+
     /**
      * Constructor que inicializa los datos de ordenamiento desde un determinado
      * arreglo de enteros
@@ -45,8 +47,13 @@ public class MezclaNatural {
         iniciar(path);
     }
 
+    public MezclaNatural(String path, String destino) {
+        iniciar(path);
+        this.destino = destino;
+    }
+
     public boolean ordenar() {
-        long total = ManejoArchivo.contarLineas(destino);
+        long total = ManejoArchivo.contarLineas("principal.u5");
         if (total == 0) {
             return false;
         }
@@ -76,8 +83,8 @@ public class MezclaNatural {
             return;
         }
 
-        int dA = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[0]));
-        int dB = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[1]));
+        int dA = Integer.parseInt(ManejoArchivo.leer(destino, lineas[0]));
+        int dB = Integer.parseInt(ManejoArchivo.leer(destino, lineas[1]));
         boolean vacio = auxA ? ManejoArchivo.contarLineas("aux1.u5") == 0 : ManejoArchivo.contarLineas("aux2.u5") == 0;
         boolean primero = true;
         if (lineas[1] == total) {
@@ -99,8 +106,8 @@ public class MezclaNatural {
             lineas[0]++;
             lineas[1]++;
             if (lineas[1] <= total) {
-                dA = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[0]));
-                dB = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[1]));
+                dA = Integer.parseInt(ManejoArchivo.leer(destino, lineas[0]));
+                dB = Integer.parseInt(ManejoArchivo.leer(destino, lineas[1]));
             }
         }
 
@@ -123,7 +130,7 @@ public class MezclaNatural {
         long totalB = ManejoArchivo.contarLineas("aux2.u5");
 
         if (totalB == 0) {
-            ManejoArchivo.copiarArchivo("aux1.u5", "principal.u5");
+            ManejoArchivo.copiarArchivo("aux1.u5", destino);
             return;
         }
 
@@ -136,7 +143,7 @@ public class MezclaNatural {
             dB = Integer.parseInt(ManejoArchivo.leer("aux2.u5", lineas[1]));
             while (!ManejoArchivo.leer("aux1.u5", lineas[0]).equals("") && !ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
                 if (dA <= dB) {
-                    ManejoArchivo.escribir(dA + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(dA + "\n", destino, nuevo);
                     nuevo = false;
                     lineas[0]++;
                     if (lineas[0] > totalA) {
@@ -150,7 +157,7 @@ public class MezclaNatural {
                 }
 
                 if (dB <= dA) {
-                    ManejoArchivo.escribir(dB + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(dB + "\n", destino, nuevo);
                     nuevo = false;
                     lineas[1]++;
                     if (lineas[1] > totalB) {
@@ -170,10 +177,10 @@ public class MezclaNatural {
                         lineas[1]++;
                     }
                     if (lineas[1] == totalB) {
-                        ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]), "principal.u5", nuevo);
+                        ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]), destino, nuevo);
                         return;
                     }
-                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", destino, nuevo);
                     lineas[1]++;
                     if (lineas[1] > totalB) {
                         return;
@@ -187,17 +194,17 @@ public class MezclaNatural {
                         lineas[0]++;
                     }
                     if (lineas[0] == totalA) {
-                        ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), "principal.u5", nuevo);
+                        ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), destino, nuevo);
                         return;
                     }
-                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", destino, nuevo);
                     lineas[0]++;
                 }
             }
 
             if (ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
                 while (!ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
-                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", destino, nuevo);
                     lineas[1]++;
                     if (lineas[1] > totalB) {
                         break;
@@ -213,7 +220,7 @@ public class MezclaNatural {
 
             if (ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
                 while (!ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
-                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", destino, nuevo);
                     lineas[0]++;
                     if (lineas[0] > totalA) {
                         break;
@@ -233,10 +240,10 @@ public class MezclaNatural {
                 lineas[0]++;
             }
             if (lineas[0] == totalA) {
-                ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), "principal.u5", nuevo);
+                ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), destino, nuevo);
                 return;
             }
-            ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+            ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", destino, nuevo);
             lineas[0]++;
             if (lineas[0] > totalA) {
                 return;
