@@ -13,7 +13,7 @@ import io.ManejoArchivo;
  */
 public class MezclaNatural {
 
-    private String destino = "principal.u5";
+    private String destino = "natural.u5";
 
     /**
      * Constructor que inicializa los datos de ordenamiento desde un determinado
@@ -53,7 +53,7 @@ public class MezclaNatural {
     }
 
     public boolean ordenar() {
-        long total = ManejoArchivo.contarLineas("principal.u5");
+        long total = ManejoArchivo.contarLineas(destino);
         if (total == 0) {
             return false;
         }
@@ -261,9 +261,9 @@ public class MezclaNatural {
             nums += i == cantidad - 1 ? datos[i] : datos[i] + "\n";
         }
 
-        if (ManejoArchivo.escribir(nums, "principal.u5", true)) {
+        if (ManejoArchivo.escribir(nums, destino, true)) {
             System.out.println("INICIALIZACION EXITOSA");
-            ManejoArchivo.copiarArchivo("principal.u5", "respaldo.u5");
+            ManejoArchivo.copiarArchivo(destino, "respaldoNatural.u5");
             return;
         }
 
@@ -282,9 +282,9 @@ public class MezclaNatural {
             nums += i == cantidad - 1 ? ((int) (Math.random() * (max - min) + min + 1)) : ((int) (Math.random() * (max - min) + min + 1)) + "\n";
         }
 
-        if (ManejoArchivo.escribir(nums, "principal.u5", true)) {
+        if (ManejoArchivo.escribir(nums, destino, true)) {
             System.out.println("INICIALIZACION EXITOSA");
-            ManejoArchivo.copiarArchivo("principal.u5", "respaldo.u5");
+            ManejoArchivo.copiarArchivo(destino, "respaldoNatural.u5");
             return;
         }
 
@@ -298,7 +298,7 @@ public class MezclaNatural {
      * @param path direccion del archivo original
      */
     private void iniciar(String path) {
-        if (ManejoArchivo.copiarArchivo(path, "principal.u5")) {
+        if (ManejoArchivo.copiarArchivo(path, destino)) {
             System.out.println("copiado exitoso");
             return;
         }

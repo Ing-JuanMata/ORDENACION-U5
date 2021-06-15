@@ -12,6 +12,7 @@ import io.ManejoArchivo;
  * @author ING-JUANMATA
  */
 public class MezclaDirecta {
+    private String destino = "directa.u5";
 
     /**
      * Constructor para iniciar el documento con un array de datos
@@ -45,7 +46,7 @@ public class MezclaDirecta {
     }
 
     public boolean ordenar() {
-        long total = ManejoArchivo.contarLineas("principal.u5");
+        long total = ManejoArchivo.contarLineas(destino);
         if (total == 0) {
             return false;
         }
@@ -79,7 +80,7 @@ public class MezclaDirecta {
         boolean primero = true;
         int dA;
         for (; lineas[auxA ? 0 : 1] <= total && aux > 0; lineas[auxA ? 0 : 1]++, aux--) {
-            dA = Integer.parseInt(ManejoArchivo.leer("principal.u5", lineas[auxA ? 0 : 1]));
+            dA = Integer.parseInt(ManejoArchivo.leer(destino, lineas[auxA ? 0 : 1]));
             ManejoArchivo.escribir((primero && !vacio ? "\n\n" : "") + String.valueOf(dA) + (aux - 1 > 0 && lineas[auxA ? 0 : 1] + 1 <= total ? "\n" : ""), auxA ? "aux1.u5" : "aux2.u5", vacio);
             primero = false;
             vacio = false;
@@ -93,7 +94,7 @@ public class MezclaDirecta {
         long totalB = ManejoArchivo.contarLineas("aux2.u5");
 
         if (totalB == 0) {
-            ManejoArchivo.copiarArchivo("aux1.u5", "principal.u5");
+            ManejoArchivo.copiarArchivo("aux1.u5", destino);
             return;
         }
 
@@ -106,7 +107,7 @@ public class MezclaDirecta {
             dB = Integer.parseInt(ManejoArchivo.leer("aux2.u5", lineas[1]));
             while (!ManejoArchivo.leer("aux1.u5", lineas[0]).equals("") && !ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
                 if (dA <= dB) {
-                    ManejoArchivo.escribir(dA + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(dA + "\n", destino, nuevo);
                     nuevo = false;
                     lineas[0]++;
                     if (lineas[0] > totalA) {
@@ -120,7 +121,7 @@ public class MezclaDirecta {
                 }
 
                 if (dB <= dA) {
-                    ManejoArchivo.escribir(dB + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(dB + "\n", destino, nuevo);
                     nuevo = false;
                     lineas[1]++;
                     if (lineas[1] > totalB) {
@@ -140,10 +141,10 @@ public class MezclaDirecta {
                         lineas[1]++;
                     }
                     if (lineas[1] == totalB) {
-                        ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]), "principal.u5", nuevo);
+                        ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]), destino, nuevo);
                         return;
                     }
-                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", destino, nuevo);
                     lineas[1]++;
                     if (lineas[1] > totalB) {
                         return;
@@ -157,17 +158,17 @@ public class MezclaDirecta {
                         lineas[0]++;
                     }
                     if (lineas[0] == totalA) {
-                        ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), "principal.u5", nuevo);
+                        ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), destino, nuevo);
                         return;
                     }
-                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", destino, nuevo);
                     lineas[0]++;
                 }
             }
 
             if (ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
                 while (!ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
-                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux2.u5", lineas[1]) + "\n", destino, nuevo);
                     lineas[1]++;
                     if (lineas[1] > totalB) {
                         break;
@@ -183,7 +184,7 @@ public class MezclaDirecta {
 
             if (ManejoArchivo.leer("aux2.u5", lineas[1]).equals("")) {
                 while (!ManejoArchivo.leer("aux1.u5", lineas[0]).equals("")) {
-                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+                    ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", destino, nuevo);
                     lineas[0]++;
                     if (lineas[0] > totalA) {
                         break;
@@ -203,10 +204,10 @@ public class MezclaDirecta {
                 lineas[0]++;
             }
             if (lineas[0] == totalA) {
-                ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), "principal.u5", nuevo);
+                ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]), destino, nuevo);
                 return;
             }
-            ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", "principal.u5", nuevo);
+            ManejoArchivo.escribir(ManejoArchivo.leer("aux1.u5", lineas[0]) + "\n", destino, nuevo);
             lineas[0]++;
             if (lineas[0] > totalA) {
                 return;
@@ -224,9 +225,9 @@ public class MezclaDirecta {
             nums += i == cantidad - 1 ? datos[i] : datos[i] + "\n";
         }
 
-        if (ManejoArchivo.escribir(nums, "principal.u5", true)) {
+        if (ManejoArchivo.escribir(nums, destino, true)) {
             System.out.println("INICIALIZACION EXITOSA");
-            ManejoArchivo.copiarArchivo("principal.u5", "respaldo.u5");
+            ManejoArchivo.copiarArchivo(destino, "respaldoDirecto.u5");
             return;
         }
 
@@ -245,9 +246,9 @@ public class MezclaDirecta {
             nums += i == cantidad - 1 ? ((int) (Math.random() * (max - min) + min + 1)) : ((int) (Math.random() * (max - min) + min + 1)) + "\n";
         }
 
-        if (ManejoArchivo.escribir(nums, "principal.u5", true)) {
+        if (ManejoArchivo.escribir(nums, destino, true)) {
             System.out.println("INICIALIZACION EXITOSA");
-            ManejoArchivo.copiarArchivo("principal.u5", "respaldo.u5");
+            ManejoArchivo.copiarArchivo(destino, "respaldoDirecto.u5");
             return;
         }
 
@@ -261,7 +262,7 @@ public class MezclaDirecta {
      * @param path direccion del archivo original
      */
     private void iniciar(String path) {
-        if (ManejoArchivo.copiarArchivo(path, "principal.u5")) {
+        if (ManejoArchivo.copiarArchivo(path, destino)) {
             System.out.println("copiado exitoso");
             return;
         }
